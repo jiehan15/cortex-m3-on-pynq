@@ -1,2 +1,6 @@
 arm2gcc
+builds
 .vscode
+*.bin
+dump.txt
+*.elf

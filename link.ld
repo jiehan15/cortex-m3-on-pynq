@@ -11,8 +11,7 @@ ENTRY(ResetISR)
 
 SECTIONS
 {
-    __data_section_offset = .;
-    __itcm_section_offset = .;
+    __tcm_section_offset = .;
 
     .bootrom :
     {
@@ -24,7 +23,7 @@ SECTIONS
     } > external_rom AT>external_rom
 
     __bootrom_sz = _ebootrom - _bootrom;
-    __data_section_offset += __bootrom_sz;
+    __tcm_section_offset += __bootrom_sz;
 
     .text :
     {
@@ -36,7 +35,28 @@ SECTIONS
     } > external_rom AT>external_rom
 
     __text_sz = _etext - _text;
-    __data_section_offset += __text_sz;
+    __tcm_section_offset += __text_sz;
+
+    /* Why?
+     *  00000160 <__fast_function_veneer>:
+     *  160:	f85f f000 	ldr.w	pc, [pc]	@ 164 <__fast_function_veneer+0x4>
+     *  164:	10000001 	andne	r0, r0, r1  <-- looks like this line is considered in text section
+     */
+    __tcm_section_offset += 4;
+
+    /* .data and .bss at external sram */
+    __external_sram_start = __tcm_section_offset;
+
+    .data :
+    {
+        _data = .;
+        . = ALIGN(4);
+        *(.data*)
+        _edata = .;
+    } > external_sram AT>external_rom
+
+    __data_sz = _edata - _data;
+    __tcm_section_offset += __data_sz;
 
     .bss :
     {
@@ -48,9 +68,11 @@ SECTIONS
     } > external_sram AT>external_rom
 
     __bss_sz = _ebss - _bss;
-    __data_section_offset += __bss_sz;
+    __external_sram_end = __external_sram_start + __data_sz + __bss_sz;
+    __tcm_section_offset += __bss_sz;
 
-    __itcm_section_offset = __data_section_offset;
+    /* ITCM and DTCM */
+    __itcm_section_offset = __tcm_section_offset;
 
     .itcm :
     {
@@ -62,15 +84,17 @@ SECTIONS
 
     __itcm_sz = _eitcm - _itcm;
     __eitcm_abs = __itcm_section_offset + __itcm_sz;
-    __data_section_offset += __itcm_sz;
 
-    .data :
+    __dtcm_section_offset = __eitcm_abs;
+
+    .dtcm :
     {
-        _data = .;
+        _dtcm = .;
         . = ALIGN(4);
-        *(.data*)
-        _edata = .;
+        *(.dtcm*)
+        _edtcm = .;
     } > dtcm AT>external_rom
 
-    _edata_abs = __data_section_offset + _edata - _data;
+    __dtcm_sz = _edtcm - _dtcm;
+    _edtcm_abs = __dtcm_section_offset + __dtcm_sz;
 }

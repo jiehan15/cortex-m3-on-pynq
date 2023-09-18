@@ -13,10 +13,19 @@ COPTS = \
 
 CDEFS =
 
-CFLAGS = $(COPTS) $(addprefix -D,$(CDEFS))
+include mkrules/def.mk
 
-ASM_SRC = $(wildcard src/*.s)
-C_SRC = $(wildcard src/*.c)
+INCS = \
+	src/
+
+CFLAGS = \
+	$(COPTS) \
+	$(addprefix -I,$(INCS)) \
+	$(addprefix -D,$(CDEFS)) \
+	$(addprefix -D,$(C_AUTO_DEFS))
+
+ASM_SRC = $(wildcard src/boot/*.s)
+C_SRC = $(wildcard src/*.c) $(wildcard src/*/*.c)
 
 ASM_OBJ = $(ASM_SRC:%.s=$(BUILDS)/%.o)
 C_OBJ = $(C_SRC:%.c=$(BUILDS)/%.o)
