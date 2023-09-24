@@ -1,7 +1,7 @@
 
     .section .isr_vector
 Vectors:
-    .word   0x2013FFFF                  // The initial stack pointer, 8KB
+    .word   0x2007fff                  // The initial stack pointer, 8KB
     .word   ResetISR                    // The reset handler
     .word   Default_Handler             // The NMI handler
     .word   HardFault_Handler           // The hard fault handler

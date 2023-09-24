@@ -4,16 +4,17 @@
 #include "libs/lib.h"
 #include "libs/addresses.h"
 
+static void __init__led(void)
+{
+    uint32* led = (uint32*)M3_GPIO_0_LED;
+    *led = 0x0;
+}
+
 void __init__()
 {
+    /* System ticker */
     __number_of_ticks = 0;
 
-#ifdef DEBUG_LINK_SCRIPT_ENABLE
-#define ARR_SZ 5
-
-    uint32 arr[ARR_SZ] = {
-        _text, _etext, __text_sz, __external_sram_start, __external_sram_end
-    };
-    memcpy((uint32*)EXTERNAL_SARM_C_DEBUG_ADDR, arr, sizeof(uint32) * ARR_SZ);
-#endif /* #ifdef DEBUG_LINK_SCRIPT_ENABLE */
+    /* LEDs */
+    __init__led();
 }

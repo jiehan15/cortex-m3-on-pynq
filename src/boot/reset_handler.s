@@ -17,12 +17,12 @@ copy_loop_dtcm:
     cmp r0, r1
     blt copy_loop_dtcm
     // debug...
-    ldr r3, =0x20100020
-    ldr r0, =__dtcm_section_offset
-    str r0, [r3], #4
-    str r1, [r3], #4
-    str r2, [r3], #4
-    str r4, [r3], #4
+    # ldr r3, =0x20100020
+    # ldr r0, =__dtcm_section_offset
+    # str r0, [r3], #4
+    # str r1, [r3], #4
+    # str r2, [r3], #4
+    # str r4, [r3], #4
 
     // copy code to itcm
     .extern __itcm_section_offset
@@ -38,12 +38,12 @@ copy_loop_itcm:
     cmp r0, r1
     blt copy_loop_itcm
     // debug...
-    ldr r3, =0x20100040
-    ldr r0, =__itcm_section_offset
-    str r0, [r3], #4
-    str r1, [r3], #4
-    str r2, [r3], #4
-    str r4, [r3], #4
+    # ldr r3, =0x20100040
+    # ldr r0, =__itcm_section_offset
+    # str r0, [r3], #4
+    # str r1, [r3], #4
+    # str r2, [r3], #4
+    # str r4, [r3], #4
 
     // copy code to .data and .bss
     .extern __external_sram_start
@@ -59,12 +59,12 @@ copy_loop_data_bss:
     cmp r0, r1
     blt copy_loop_data_bss
     // debug...
-    ldr r3, =0x20100060
-    ldr r0, =__external_sram_start
-    str r0, [r3], #4
-    str r1, [r3], #4
-    str r2, [r3], #4
-    str r4, [r3], #4
+    # ldr r3, =0x20100060
+    # ldr r0, =__external_sram_start
+    # str r0, [r3], #4
+    # str r1, [r3], #4
+    # str r2, [r3], #4
+    # str r4, [r3], #4
     // go to main
     .extern main
     bl main
